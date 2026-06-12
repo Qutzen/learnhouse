@@ -62,6 +62,7 @@ export function CourseCard({ data }: iAppProps) {
             alt={data.title}
             fill
             unoptimized
+            priority
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
@@ -112,35 +113,25 @@ export function CourseCard({ data }: iAppProps) {
 export function CourseCardSkeleton() {
   return (
     <Card className="overflow-hidden rounded-md py-0 gap-0">
-      {/* Image Section */}
       <div className="relative h-48">
         <Skeleton className="h-full w-full rounded-none" />
-
-        {/* Menu Button */}
         <Skeleton className="absolute right-3 top-3 h-8 w-8 rounded-md" />
-
-        {/* Overlay Content */}
         <div className="absolute bottom-0 left-0 right-0 p-5">
           <Skeleton className="h-6 w-3/4 bg-white/20" />
-
           <Skeleton className="mt-2 h-4 w-full bg-white/20" />
           <Skeleton className="mt-1 h-4 w-2/3 bg-white/20" />
-
           <div className="mt-4 flex gap-4">
             <Skeleton className="h-4 w-16 bg-white/20" />
             <Skeleton className="h-4 w-20 bg-white/20" />
           </div>
         </div>
       </div>
-
-      {/* Footer */}
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <Skeleton className="h-3 w-20" />
             <Skeleton className="h-4 w-24" />
           </div>
-
           <Skeleton className="h-10 w-28 rounded-md" />
         </div>
       </CardContent>
