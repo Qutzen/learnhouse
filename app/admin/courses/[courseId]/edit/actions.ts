@@ -1,5 +1,7 @@
 "use server";
 
+import { stripe } from "@/lib/stripe";
+import { env } from "@/lib/env";
 import { requireAdmin } from "@/app/data/admin/require-admin";
 import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/lib/types";
@@ -11,24 +13,85 @@ import {
   lessonSchema,
   LessonSchemaType,
 } from "@/lib/zodSchemas";
-import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
+import arcjet, { fixedWindow } from "@/lib/arcjet";
 import { request } from "@arcjet/next";
 import { revalidatePath } from "next/cache";
 
-const aj = arcjet
-  .withRule(
-    detectBot({
-      mode: "LIVE",
-      allow: [],
-    }),
-  )
-  .withRule(
-    fixedWindow({
-      mode: "LIVE",
-      window: "1m",
-      max: 5,
-    }),
-  );
+const aj = arcjet.withRule(
+  fixedWindow({
+    mode: "LIVE",
+    window: "1m",
+    max: 5,
+  }),
+);
+
+// export async function EditCourse(
+//   data: CourseSchemaType,
+//   courseId: string,
+// ): Promise<ApiResponse> {
+//   const user = await requireAdmin();
+
+//   try {
+//     const req = await request();
+//     const decision = await aj.protect(req, {
+//       fingerprint: user.user.id,
+//     });
+
+//     if (decision.isDenied()) {
+//       if (decision.reason.isRateLimit()) {
+//         return {
+//           status: "error",
+//           message: "You have been blocked due to rate limiting",
+//         };
+//       } else {
+//         return {
+//           status: "error",
+//           message: "You are a bot! if this is a mistake contact our support",
+//         };
+//       }
+//     }
+
+//     const result = courseSchema.safeParse(data);
+
+//     if (!result.success) {
+//       return {
+//         status: "error",
+//         message: "Invalid data",
+//       };
+//     }
+
+//     const existingCourse = await prisma.course.findUnique({
+//       where: {
+//         id: courseId,
+//         userId: user.user.id,
+//       },
+//       select: {
+//         price: true,
+//         stripeProductId: true,
+//         stripePriceId: true,
+//       },
+//     });
+
+//     await prisma.course.update({
+//       where: {
+//         id: courseId,
+//         userId: user.user.id,
+//       },
+//       data: {
+//         ...result.data,
+//       },
+//     });
+//     return {
+//       status: "success",
+//       message: "Course Updated",
+//     };
+//   } catch {
+//     return {
+//       status: "error",
+//       message: "Failed to update Course",
+//     };
+//   }
+// }
 
 export async function EditCourse(
   data: CourseSchemaType,
@@ -48,12 +111,12 @@ export async function EditCourse(
           status: "error",
           message: "You have been blocked due to rate limiting",
         };
-      } else {
-        return {
-          status: "error",
-          message: "You are a bot! if this is a mistake contact our support",
-        };
       }
+
+      return {
+        status: "error",
+        message: "You are a bot! if this is a mistake contact our support",
+      };
     }
 
     const result = courseSchema.safeParse(data);
@@ -65,6 +128,54 @@ export async function EditCourse(
       };
     }
 
+    const existingCourse = await prisma.course.findUnique({
+      where: {
+        id: courseId,
+        userId: user.user.id,
+      },
+      select: {
+        price: true,
+        stripeProductId: true,
+        stripePriceId: true,
+      },
+    });
+
+    if (!existingCourse) {
+      return {
+        status: "error",
+        message: "Course not found",
+      };
+    }
+
+    const imageUrl = result.data.fileKey
+      ? `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES}.t3.tigrisfiles.io/${result.data.fileKey}`
+      : undefined;
+
+    // Update Stripe Product
+    if (existingCourse.stripeProductId) {
+      await stripe.products.update(existingCourse.stripeProductId, {
+        name: result.data.title,
+        description: result.data.smallDescription,
+        images: imageUrl ? [imageUrl] : [],
+      });
+    }
+
+    let stripePriceId = existingCourse.stripePriceId;
+
+    // Create new Stripe Price if price changed
+    if (
+      existingCourse.price !== result.data.price &&
+      existingCourse.stripeProductId
+    ) {
+      const newPrice = await stripe.prices.create({
+        product: existingCourse.stripeProductId,
+        currency: "inr",
+        unit_amount: Math.round(Number(result.data.price) * 100),
+      });
+
+      stripePriceId = newPrice.id;
+    }
+
     await prisma.course.update({
       where: {
         id: courseId,
@@ -72,13 +183,17 @@ export async function EditCourse(
       },
       data: {
         ...result.data,
+        stripePriceId,
       },
     });
+
     return {
       status: "success",
       message: "Course Updated",
     };
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return {
       status: "error",
       message: "Failed to update Course",

@@ -1,7 +1,6 @@
 import { getIndividualCourse } from "@/app/data/course/get-course";
 import { RenderDescription } from "@/components/rich-text-editor/RenderDescription";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Collapsible,
@@ -18,6 +17,10 @@ import {
 } from "@tabler/icons-react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { checkIfCourseBougth } from "@/app/data/user/user-is-enrolled";
+import Link from "next/link";
+import { EnrollmentButton } from "./_components/EnrollmentButton";
+import { Button } from "@/components/ui/button";
 
 type Params = Promise<{ slug: string }>;
 
@@ -25,6 +28,7 @@ export default async function SlugPage({ params }: { params: Params }) {
   const { slug } = await params;
   const course = await getIndividualCourse(slug);
   const thumbnailUrl = constructUrl(course.fileKey);
+  const isEnrolled = await checkIfCourseBougth(course.id);
   return (
     <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
       <div className="order-1 lg:col-span-2">
@@ -253,11 +257,17 @@ export default async function SlugPage({ params }: { params: Params }) {
                   ))}
                 </div>
               </div>
-
-              <Button className="mt-6 h-11 w-full rounded-md text-base font-semibold">
-                Enroll Now
-              </Button>
-
+              {isEnrolled ? (
+                <Button
+                  asChild
+                  variant="outline"
+                  className="h-10 rounded-md mt-6 w-full text-base font-semibold"
+                >
+                  <Link href="/dashboard">Watch Course</Link>
+                </Button>
+              ) : (
+                <EnrollmentButton courseId={course.id} />
+              )}
               <p className="mt-3 text-center text-xs text-muted-foreground">
                 30-day money-back guarantee
               </p>
