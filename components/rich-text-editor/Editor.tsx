@@ -13,13 +13,6 @@ interface RichTextEditorProps {
   field: ControllerRenderProps<DescriptionInputType, "description">;
 }
 
-// interface RichTextEditorProps {
-//   field: {
-//     value: string;
-//     onChange: (value: string) => void;
-//   };
-// }
-
 export default function RichTextEditor({ field }: RichTextEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,

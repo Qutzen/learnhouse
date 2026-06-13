@@ -8,43 +8,38 @@ datasource db {
 }
 
 model User {
-  id            String       @id
-  name          String
-  email         String
-  emailVerified Boolean      @default(false)
-  image         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  courses       Course[]
-  enrollment    Enrollment[]
+  id               String       @id
+  name             String
+  email            String       @unique
+  emailVerified    Boolean      @default(false)
+  image            String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  banExpires       DateTime?
+  banReason        String?
+  banned           Boolean?     @default(false)
+  role             String?      @default("user")
+  stripeCustomerId String?      @unique
+  courses          Course[]
+  enrollment       Enrollment[]
+  accounts         Account[]
+  sessions         Session[]
 
-  stripeCustomerId String? @unique
-
-  role       String?   @default("user")
-  banned     Boolean?  @default(false)
-  banReason  String?
-  banExpires DateTime?
-
-  @@unique([email])
   @@map("user")
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id             String   @id
+  expiresAt      DateTime
+  token          String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  ipAddress      String?
+  userAgent      String?
+  userId         String
   impersonatedBy String?
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@index([userId])
   @@map("session")
 }
@@ -54,7 +49,6 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -64,6 +58,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
@@ -82,31 +77,63 @@ model Verification {
 }
 
 model Course {
-  id String @id @default(uuid())
-
-  title       String
-  description String
-  fileKey     String
-  price       Int
-  duration    Int
-  level       CourseLevel @default(Beginner)
-
-  stripeProductId String?
-  stripePriceId   String?
-
+  id               String       @id @default(uuid())
+  title            String
+  description      String
+  fileKey          String
+  price            Int
+  duration         Int
+  level            CourseLevel  @default(Beginner)
   category         String
   smallDescription String
-  slug             String @unique
+  slug             String       @unique
+  status           CourseStatus @default(Draft)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  userId           String
+  stripePriceId    String?
+  stripeProductId  String?
+  chapter          Chapter[]
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollment       Enrollment[]
+}
 
-  status CourseStatus @default(Draft)
-
+model Chapter {
+  id        String   @id @default(uuid())
+  title     String
+  position  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+}
 
-  chapter    Chapter[]
-  enrollment Enrollment[]
+model Lesson {
+  id           String   @id @default(uuid())
+  title        String
+  description  String?
+  thumbnailKey String?
+  videoKey     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  chapterId    String
+  position     Int
+  chapter      Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id        String           @id @default(uuid())
+  amount    Int
+  status    EnrollmentStatus @default(Pending)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  courseId  String
+  userId    String
+  course    Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
 }
 
 enum CourseLevel {
@@ -119,51 +146,6 @@ enum CourseStatus {
   Draft
   Published
   Archived
-}
-
-model Chapter {
-  id String @id @default(uuid())
-
-  title    String
-  position Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  courseId  String
-
-  lessons Lesson[]
-}
-
-model Lesson {
-  id String @id @default(uuid())
-
-  title        String
-  description  String?
-  thumbnailKey String?
-  videoKey     String?
-  position     Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  chapterId String
-}
-
-model Enrollment {
-  id String @id @default(uuid())
-
-  amount Int
-  status EnrollmentStatus @default(Pending)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  courseId  String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-
-  @@unique([userId, courseId])
 }
 
 enum EnrollmentStatus {

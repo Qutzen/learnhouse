@@ -2,17 +2,14 @@
 
 import * as React from "react";
 import {
-  IconBook,
   IconBooks,
   IconCamera,
   IconChartArea,
-  IconChartBar,
   IconFileAi,
   IconFileDescription,
   IconFolder,
   IconHelp,
   IconLayoutDashboard,
-  IconLibrary,
   IconSearch,
   IconSettings,
   IconUsers,
@@ -51,7 +48,7 @@ const data = {
     },
     {
       title: "Analytics",
-      url: "#",
+      url: "/admin/analytics",
       icon: IconChartArea,
     },
     {

@@ -33,16 +33,6 @@ export function EmptyState({ btnText, description, title, href }: iAppProps) {
       >
         {btnText}
       </Link>
-
-      {/* <p className="mt-6 text-sm text-gray-700">
-        <a href="#" className="underline hover:text-gray-900">
-          Learn how
-        </a>{" "}
-        or{" "}
-        <a href="#" className="underline hover:text-gray-900">
-          view examples
-        </a>
-      </p> */}
     </div>
   );
 }

@@ -99,69 +99,6 @@ export async function enrollInCourseAction(
       });
     }
 
-    // const result = await prisma.$transaction(async (tx) => {
-    //   const existingEnrollment = await tx.enrollment.findUnique({
-    //     where: {
-    //       userId_courseId: {
-    //         userId: user.id,
-    //         courseId: courseId,
-    //       },
-    //     },
-    //     select: {
-    //       status: true,
-    //       id: true,
-    //     },
-    //   });
-    //   if (existingEnrollment?.status === "Active") {
-    //     return null;
-    //   }
-
-    //   let enrollment;
-    //   if (existingEnrollment) {
-    //     enrollment = await tx.enrollment.update({
-    //       where: {
-    //         id: existingEnrollment.id,
-    //       },
-    //       data: {
-    //         amount: course.price,
-    //         status: "Pending",
-    //         updatedAt: new Date(),
-    //       },
-    //     });
-    //   } else {
-    //     enrollment = await tx.enrollment.create({
-    //       data: {
-    //         userId: user.id,
-    //         courseId: course.id,
-    //         amount: course.price,
-    //         status: "Pending",
-    //       },
-    //     });
-    //   }
-
-    //   const checkoutSession = await stripe.checkout.sessions.create({
-    //     customer: stripeCustomerId,
-    //     line_items: [
-    //       {
-    //         price: "price_1ThWkvQjr0ReqUH4zBuRAmqm",
-    //         quantity: 1,
-    //       },
-    //     ],
-    //     mode: "payment",
-    //     success_url: `${env.BETTER_AUTH_URL}/payment/success`,
-    //     cancel_url: `${env.BETTER_AUTH_URL}/payment/cancel`,
-    //     metadata: {
-    //       userId: user.id,
-    //       courseId: course.id,
-    //       enrollmentId: enrollment.id,
-    //     },
-    //   });
-    //   return {
-    //     enrollment: enrollment,
-    //     checkoutUrl: checkoutSession.url,
-    //   };
-    // });
-
     const enrollment = await prisma.$transaction(async (tx) => {
       const existingEnrollment = await tx.enrollment.findUnique({
         where: {
@@ -242,13 +179,6 @@ export async function enrollInCourseAction(
       message: "Redirecting to payment",
       checkoutUrl: checkoutSession.url,
     };
-
-    // checkoutUrl = result.checkoutUrl as string;
-
-    // return {
-    //   status: "success",
-    //   message: "Stripe Customer Created",
-    // };
   } catch (error) {
     console.error("ENROLL ERROR:", error);
 
