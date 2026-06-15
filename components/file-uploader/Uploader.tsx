@@ -33,8 +33,8 @@ interface iAppProps {
 
 export function Uploader({ onChange, value, fileTypeAccepted }: iAppProps) {
   const fileUrl = useConstructUrl(value);
-  console.log("Uploader value:", value);
-  console.log("Uploader fileUrl:", fileUrl);
+  // console.log("Uploader value:", value);
+  // console.log("Uploader fileUrl:", fileUrl);
 
   const [fileState, setFileState] = useState<UploaderState>({
     error: false,
@@ -272,7 +272,7 @@ export function Uploader({ onChange, value, fileTypeAccepted }: iAppProps) {
   }, [fileState.objectUrl]);
 
   useEffect(() => {
-    console.log("Current fileState:", fileState);
+    // console.log("Current fileState:", fileState);
   }, [fileState]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

@@ -8,6 +8,7 @@ import { TopSellingCoursesTable } from "./_components/TopSellingCoursesTable";
 
 export default async function CoursesPage() {
   const data = await getAnalyticsData();
+
   return (
     <div className="space-y-6">
       <AnalyticsCards />
@@ -21,6 +22,7 @@ export default async function CoursesPage() {
         <CourseStatusChart data={data.courseStatus} />
         <MonthlyRevenueTrendChart data={data.monthlyRevenue} />
       </div>
+
       <TopSellingCoursesTable data={data.topSellingCourses} />
     </div>
   );

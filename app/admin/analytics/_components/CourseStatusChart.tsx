@@ -68,8 +68,8 @@ export function CourseStatusChart({ data }: Props) {
 
       <CardContent>
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-          <div className="relative h-80 w-full min-w-0 lg:w-[70%]">
-            <ResponsiveContainer width="99%" height="100%">
+          <div className="relative h-80 w-full min-w-0">
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}

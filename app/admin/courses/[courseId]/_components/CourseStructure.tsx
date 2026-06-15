@@ -71,12 +71,12 @@ export default function CourseStructure({ data }: iAppProps) {
 
   const [items, setItems] = useState(initialItems);
 
-  console.log(
-    items.map((item) => ({
-      title: item.title,
-      isOpen: item.isOpen,
-    })),
-  );
+  // console.log(
+  //   items.map((item) => ({
+  //     title: item.title,
+  //     isOpen: item.isOpen,
+  //   })),
+  // );
 
   useEffect(() => {
     setItems((prevItems) => {

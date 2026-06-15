@@ -34,7 +34,7 @@ const formatCurrency = (value: number) => {
 };
 
 export function MonthlyRevenueTrendChart({ data }: Props) {
-  console.log("Monthly Revenue Data:", data);
+  // console.log("Monthly Revenue Data:", data);
 
   if (!data || data.length === 0) {
     return (
@@ -73,8 +73,8 @@ export function MonthlyRevenueTrendChart({ data }: Props) {
       </CardHeader>
 
       <CardContent>
-        <div className="h-80 w-full min-w-0">
-          <ResponsiveContainer width="100%" height={320}>
+        <div className="relative h-80 w-full min-w-0">
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={data}
               margin={{

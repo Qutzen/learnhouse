@@ -95,7 +95,7 @@ export function Menubar({ editor }: iAppProps) {
                 pressed={editor.isActive("heading", { level: 1 })}
                 onPressedChange={() => {
                   editor.chain().focus().toggleHeading({ level: 1 }).run();
-                  console.log(editor.getHTML());
+                  // console.log(editor.getHTML());
                 }}
                 className={cn(
                   editor.isActive("heading", { level: 1 }) &&

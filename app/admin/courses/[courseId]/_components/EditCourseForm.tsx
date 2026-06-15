@@ -71,7 +71,7 @@ export function EditCourseForm({ data }: iAppProps) {
   });
 
   function onSubmit(values: CourseSchemaType) {
-    console.log(values);
+    // console.log(values);
     startTransition(async () => {
       const { data: result, error } = await tryCatch(
         EditCourse(values, data.id),

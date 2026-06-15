@@ -77,7 +77,7 @@ export default function CourseCreationPage() {
   });
 
   function onSubmit(values: CourseSchemaType) {
-    console.log(values);
+    // console.log(values);
     startTransition(async () => {
       const { data: result, error } = await tryCatch(CreateCourse(values));
 
@@ -377,7 +377,7 @@ export default function CourseCreationPage() {
                   name="fileKey"
                   control={form.control}
                   render={({ field, fieldState }) => {
-                    console.log("thumbnail value:", field.value);
+                    // console.log("thumbnail value:", field.value);
                     return (
                       <Field data-invalid={fieldState.invalid}>
                         <FieldLabel htmlFor="fileKey">

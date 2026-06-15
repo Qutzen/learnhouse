@@ -60,7 +60,7 @@ export function RevenueByCourseChart({ data }: Props) {
 
       <CardContent>
         <div className="h-80 w-full min-w-0">
-          <ResponsiveContainer width="99%" height="100%">
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={data}
               margin={{
@@ -102,8 +102,8 @@ export function RevenueByCourseChart({ data }: Props) {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={10}
+                tickFormatter={(_, index) => `Course ${index + 1}`}
               />
-
               <YAxis
                 tickFormatter={formatCurrency}
                 tickLine={false}
@@ -120,6 +120,7 @@ export function RevenueByCourseChart({ data }: Props) {
                   formatCurrency(Number(value)),
                   "Revenue",
                 ]}
+                labelFormatter={(label) => `${label}`}
               />
 
               <Bar dataKey="revenue" radius={[5, 5, 0, 0]}>

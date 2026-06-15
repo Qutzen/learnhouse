@@ -74,6 +74,7 @@ export function CourseDataTable({ columns, data }: DataTableProps) {
     });
   }, [data, statusFilter, levelFilter]);
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: filteredData,
     columns,

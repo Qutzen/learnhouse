@@ -22,7 +22,7 @@ interface iAppProps {
 
 export function CourseCard({ data }: iAppProps) {
   const thumbnailUrl = useConstructUrl(data.fileKey);
-  console.log(thumbnailUrl);
+  // console.log(thumbnailUrl);
 
   return (
     <>

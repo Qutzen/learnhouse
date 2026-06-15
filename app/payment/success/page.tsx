@@ -11,11 +11,19 @@ export default function PaymentSuccessPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      router.replace("/dashboard");
-    }, 10000);
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          router.replace("/dashboard");
+          return 0;
+        }
 
-    return () => clearTimeout(timeout);
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, [router]);
 
   return (

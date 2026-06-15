@@ -25,7 +25,7 @@ const aj = arcjet.withRule(
 
 export async function POST(request: Request) {
   const session = await requireAdmin();
-  console.log("Bucket:", env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES);
+  // console.log("Bucket:", env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES);
   try {
     const decision = await aj.protect(request, {
       fingerprint: session?.user.id as string,

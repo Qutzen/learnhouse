@@ -14,8 +14,8 @@ export function EnrollmentButton({ courseId }: { courseId: string }) {
       const { data: result, error } = await tryCatch(
         enrollInCourseAction(courseId),
       );
-      console.log("RESULT:", result);
-      console.log("ERROR:", error);
+      // console.log("RESULT:", result);
+      // console.log("ERROR:", error);
       if (error) {
         toast.error("An unexpected error occured. Please try again");
         return;
