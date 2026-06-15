@@ -3,23 +3,20 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function PaymentSuccessPage() {
   const [countdown, setCountdown] = useState(10);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          window.location.href = "/dashboard";
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  const router = useRouter();
 
-    return () => clearInterval(timer);
-  }, []);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      router.replace("/dashboard");
+    }, 10000);
+
+    return () => clearTimeout(timeout);
+  }, [router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">

@@ -68,7 +68,7 @@ async function RenderCourses() {
   const courses = await getAllCourses();
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-7 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-7">
       {courses.map((course) => (
         <PublicCourseCard key={course.id} data={course} />
       ))}
@@ -78,7 +78,7 @@ async function RenderCourses() {
 
 function LoadingSkeletonLayout() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-7 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-7">
       {Array.from({ length: 9 }).map((_, index) => (
         <PublicCourseCardSkeleton key={index} />
       ))}

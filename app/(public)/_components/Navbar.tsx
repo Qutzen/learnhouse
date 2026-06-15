@@ -4,7 +4,6 @@ import Link from "next/link";
 import LogoDark from "@/public/logo-dark.png";
 import LogoLight from "@/public/logo-light.png";
 import { ThemeToggle } from "@/components/ui/themeToggle";
-import { useTheme } from "next-themes";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import UserDropdown from "./UserDropdown";
@@ -16,7 +15,6 @@ const navigationItems = [
 ];
 
 export function Navbar() {
-  const { resolvedTheme } = useTheme();
   const { data: session, isPending } = authClient.useSession();
 
   return (
@@ -24,12 +22,19 @@ export function Navbar() {
       <div className="container flex min-h-16 items-center mx-auto px-4 md:px-6 lg:px-8">
         <Link href="/" className="flex items-center space-x-2 mr-4">
           <Image
-            src={resolvedTheme === "dark" ? LogoDark : LogoLight}
+            src={LogoLight}
             alt="Qutzen Logo"
             width={160}
             height={50}
-            priority
-            className="object-contain"
+            className="block dark:hidden"
+          />
+
+          <Image
+            src={LogoDark}
+            alt="Qutzen Logo"
+            width={160}
+            height={50}
+            className="hidden dark:block"
           />
           {/* <span className="font-bold">LMS</span> */}
         </Link>

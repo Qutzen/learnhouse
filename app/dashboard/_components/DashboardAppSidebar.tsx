@@ -2,17 +2,13 @@
 
 import * as React from "react";
 import {
-  IconBooks,
   IconCamera,
-  IconChartArea,
   IconFileAi,
   IconFileDescription,
-  IconFolder,
   IconHelp,
   IconLayoutDashboard,
   IconSearch,
   IconSettings,
-  IconUsers,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
@@ -38,28 +34,8 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/admin",
+      url: "/dashboard",
       icon: IconLayoutDashboard,
-    },
-    {
-      title: "Courses",
-      url: "/admin/courses",
-      icon: IconBooks,
-    },
-    {
-      title: "Analytics",
-      url: "/admin/analytics",
-      icon: IconChartArea,
-    },
-    {
-      title: "Projects",
-      url: "/admin/projects",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
     },
   ],
   navClouds: [
